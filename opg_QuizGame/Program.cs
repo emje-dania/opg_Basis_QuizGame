@@ -17,16 +17,12 @@ namespace opg_QuizGame
             // Variable liste
             bool play = true;
             bool playAgain = false;
-            string response;
-            
-            
+            string response;            
             char parsedInput;
 
 
             // an empty array for used letters
             List<char> lettersUsed = new List<char>();
-
-
 
             while (play) //The game starts
             {
@@ -43,10 +39,9 @@ namespace opg_QuizGame
                         hidden = GetHiddenWord(word);
                         playAgain = false;
                     }
+                    
                     Console.Clear();
-                    Intro(remainingLives);
-
-
+                    Intro(remainingLives,lettersUsed);
                     Console.WriteLine(hidden);
                 
 
@@ -63,13 +58,15 @@ namespace opg_QuizGame
 
                     parsedInput = input.ToCharArray()[0]; //parsedInput tager det første bogstav (hvis man er kommet til at skrive flere) og gemmer det som en char
 
+                    
                     if (lettersUsed.Contains(parsedInput))
                     {
-                        Console.WriteLine("You already used this letter");
+                        continue;                        
                     }
                     else
                     {
-                        
+                        lettersUsed.Add(parsedInput);
+
                         if (word.Contains(parsedInput))
                         {
                             int index = 0; //runden vi er nået til
@@ -84,7 +81,7 @@ namespace opg_QuizGame
                                 index++;
                             }
                         }
-                        else
+                        else 
                         {
                             remainingLives--;
                             
@@ -104,6 +101,7 @@ namespace opg_QuizGame
                         {
                             playAgain = true;
                             remainingLives = 6;
+                            lettersUsed.Clear();
                         }
                         else
                         {
@@ -114,7 +112,7 @@ namespace opg_QuizGame
                     if (remainingLives == 0)
                     {
                         Console.Clear();
-                        Intro(remainingLives);
+                        Intro(remainingLives, lettersUsed);
                         Console.WriteLine("You Lost");
                         Console.WriteLine("The word was: " + word);
                         //ask the player if they want to play again. if yes (Y) then play stay true, but if no (N) then play turn false
@@ -125,6 +123,7 @@ namespace opg_QuizGame
                         {
                             playAgain = true;
                             remainingLives = 6;
+                            lettersUsed.Clear();
                         }
                         else
                         {
@@ -175,13 +174,17 @@ namespace opg_QuizGame
         /// Introen sammen med remaining lives
         /// </summary>
         /// <param name="livesRemaining"></param>
-        static void Intro(int livesRemaining)
+        static void Intro(int livesRemaining, List<char> lettersUsed)
         {
 
             Console.WriteLine("Guess the word\nAll words are in English\nPress a letter and then enter\n");
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"Remaining lives: {livesRemaining}\n\n\n");
+            Console.WriteLine($"Remaining lives: {livesRemaining}\n");
             Console.ResetColor();
+
+            Console.WriteLine("Letters guessed: ");
+            Console.WriteLine(string.Join(" ", lettersUsed) +"\n\n");
+            
         }
 
     }
